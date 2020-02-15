@@ -3,6 +3,9 @@ const Transaction = require('./transaction')
 const UserBlock = require('./user.block') 
 const User = require('./user')
 
+const EC = require('elliptic').ec
+const ec = new EC('secp256k1')
+
 function BlockChain() {
 	this.chain = [this.createGenesisBlock()]
 	this.difficulty = 2
@@ -12,7 +15,7 @@ function BlockChain() {
 }
 
 BlockChain.prototype.createGenesisBlock = function() {
-	return new Block(0, "11/23/2019", "Genesis Block", "0")
+	return new Block("11/23/2019", "Genesis Block", "0")
 }
 
 BlockChain.prototype.createGenesisUser = function() {
@@ -38,7 +41,8 @@ BlockChain.prototype.minePendingTransactions = function(miningRewardAdress) {
 
 	this.chain.push(block)
 
-	this.pendingTransactions = [new Transaction(null, miningRewardAdress, this.miningReward)]
+	//this.pendingTransactions = [new Transaction(null, miningRewardAdress, this.miningReward)]
+	this.pendingTransactions = []
 }
 
 BlockChain.prototype.addTransaction = function(transaction) {
@@ -72,8 +76,11 @@ BlockChain.prototype.getBalanceOfAdress = function(address) {
 }
 
 BlockChain.prototype.isChainValid = function() {
+	if(this.chain.length === 1) {
+		return true
+	}
 	for(let i = 1; i < this.chain.length; i++) {
-		const curentBlock = this.chain[i]
+		const curentBlock = Object.assign(new Block, this.chain[i])
 		const previousBlock = this.chain[i-1]
 
 		if(!curentBlock.hasValidTransactions()) {
@@ -81,6 +88,7 @@ BlockChain.prototype.isChainValid = function() {
 		}
 
 		if(curentBlock.hash !== curentBlock.calculateHash()) {
+
 			return false
 		}
 		if(curentBlock.previousHash !== previousBlock.hash) {
@@ -93,6 +101,7 @@ BlockChain.prototype.isChainValid = function() {
 BlockChain.prototype.createUser = function(user) {
 	let userBlock = new UserBlock(user)
 	userBlock.previousHash = this.getLastUser().hash
+	user.signRegister(ec.keyFromPrivate(user.private_key))
 	userBlock.mineBlock(2)
 	this.userChain.push(userBlock)
 }

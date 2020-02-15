@@ -1,35 +1,74 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="/socket.io/socket.io.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <title>charity</title>
+  <script type="text/javascript">
+    $(document).ready(function() {
+      let blockChain
+      var socket = io("http://localhost:3000")
+      socket.emit('USER_LOGIN')
+
+      socket.on('SERVER_SEND_BLOCKCHAIN', function(data) {
+        blockChain = data
+        console.log(blockChain)
+      })
+
+      $("#btnSend").click(function() {
+        socket.emit('CLIENT_SEND_BLOCKCHAIN', blockChain)
+      })
+
+    })
+  </script> 
 </head>
 <body>
   <div class="container">
     <div class="row">
       <div class="col-md-6 offset-md-3">
         <form action="/charity" method="post">
-          <div class="form-group">
-            <label for="charity-name">Tổ chức từ thiện</label>
-            <select id="charity-name" name="charity_pub_key">
-              <% charitys.forEach(function(user) { %>
-                <option value="<%= user.pub_key %>"><%= user.username %></option>
+            <fieldset>
+              <legend>Chuyển Tiền Từ</legend>
+              <div class="form-group">
+                <label for="creditNumber">Số Tài Khoản</label>
+                <input type="text" class="form-control" id="creditNumber" placeholder="" name="creditNumber">
+              </div>
 
-            <% }) %>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="monney">Số tiền từ thiện</label>
-            <input type="text" class="form-control" id="monney" placeholder="" name="amount">
-          </div>
-          <button type="submit" class="btn btn-primary">Gửi</button>
+              <div class="form-group">
+                <label for="creditOwner">Chủ Tài Khoản</label>
+                <input type="text" class="form-control" id="creditOwner" placeholder="" name="creditOwner">
+              </div>
+
+              <div class="form-group">
+                <label for="bank">Ngân Hàng - Chi Nhánh</label>
+                <input type="text" class="form-control" id="bank" placeholder="" name="bank">
+              </div>
+
+              <div class="form-group">
+                <label for="monney">Số tiền từ thiện</label>
+                <input type="text" class="form-control" id="monney" placeholder="" name="amount">
+              </div>
+            </fieldset>
+            
+            <fieldset>
+              <legend>Tới Tổ chức / Hội</legend>
+              <label for="charity-name">Tổ chức từ thiện</label>
+                <select id="charity-name" name="charity_pub_key" class="form-control">
+                  <% charitys.forEach(function(user) { %>
+                  <option value="<%= user.pub_key %>"><%= user.username %></option>
+
+                  <% }) %>
+                </select>
+              </fieldset>
+          <button type="submit" class="btn btn-primary" id="btnSend">Gửi</button>
         </form>
       </div>
     </div>
   </div>
 </body>
 </html>
+

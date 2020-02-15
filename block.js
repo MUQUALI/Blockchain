@@ -1,4 +1,5 @@
 const SHA256 = require('crypto-js/sha256')
+const Transaction = require('./transaction')
 
 function Block(timestamp, transactions, previousHash) {
 	this.timestamp = timestamp
@@ -19,12 +20,13 @@ Block.prototype.mineBlock = function(difficulty) {
 		this.hash = this.calculateHash()
 	}
 
-	console.log("Block is mined: ", this.hash)
+	//console.log("Block is mined: ", this.hash)
 }
 
 Block.prototype.hasValidTransactions = function() {
 
-	for(const tx of this.transactions) {
+	for(let tx of this.transactions) {
+		tx = Object.assign(new Transaction, tx)
 		if(!tx.isValid()) {
 			return false
 		}

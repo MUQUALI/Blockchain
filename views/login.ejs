@@ -1,31 +1,82 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<title>home</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <!-- integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" -->
+    <script src="jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <title>home</title>
+
+    <style>
+        .tieu-de {
+            border-bottom: solid 1px black;
+            width: 298px;
+            height: 40px;
+            font-size: 25px;
+            overflow: hidden;
+            padding-top: 6px;
+            text-align: center;
+            background-color: #2766db;
+            color: white;
+        }
+        
+        .nhap-dl {
+            width: 200px;
+            border-radius: 3px;
+            margin-top: 3px;
+        }
+        
+        .row {
+            margin: auto;
+            margin-top: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: #82db6e;
+            border: 1px solid black;
+            border-radius: 6px 6px 0px 0px;
+        }
+        
+        a#dangky {
+            border: 1px solid white;
+            padding: 3px 10px;
+            color: #2f2e2e;
+            background-color: #f4f4f4;
+        }
+        
+        .form-nhap {
+            text-align: center;
+        }
+    </style>
+
 </head>
+
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3">
-				<form action="/login" method="post">
-					<input id="txtUsername" type="text" name="username" placeholder="Tên đăng nhập">
-					<input id="txtPassword" type="text" name="password" placeholder="Mật khẩu">
-					<input type="submit" value="login" id="btnLogin">
-					<% if(locals.errs) { 
+    <%- include('menu'); -%>
+        <div class="container" style="min-height:1000px">
+            <div class="row">
+                <div>
+                    <label class="tieu-de">Đăng Nhập</label>
+                    <form action="/login" method="post" class="form-nhap">
+                        <input class="nhap-dl" id="txtUsername" type="text" name="username" placeholder="Tên đăng nhập">
+                        <input class="nhap-dl" id="txtPassword" type="text" name="password" placeholder="Mật khẩu">
+                        </br>
+                        <a href="./register" id="dangky">Đăng ký</a>
+                        <input type="submit" value="Đăng nhập" id="btnLogin" style="margin-top:4px; padding: 0px 10px;">
+                        <% if(locals.errs) { 
 						errs.forEach(function(err) { %>
-							<div class="alert alert-danger" role="alert">
-							  <%= err %>
-							</div>						
-						<% }) 
+                            <div class="alert alert-danger" role="alert">
+                                <%= err %>
+                            </div>
+                            <% }) 
 					} %>
-				</form>
-			</div>
-		</div>
-	</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <%- include('footer'); -%>
 </body>
+
 </html>

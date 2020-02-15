@@ -24,37 +24,15 @@
 			
 			let blockChain
 			var socket = io("http://localhost:3000")
-			socket.emit('USER_LOGIN')
-			//socket.emit('USER_REGISTER')
 
-			socket.on('SERVER_SEND_BLOCKCHAIN', function(data) {
-				blockChain = data
-				console.log(blockChain)
-				let chain = data.chain
-				let body = ''
-				for(i = 1; i < chain.length; i++) {
-					chain[i].transactions.forEach(function(tran) {
-						body += '<tr><td>' + chain[i].timestamp + '</td><td>' + tran.creditOwner + '</td><td>' + tran.creditNumber  + '</td><td>' + tran.receiveOwner + '</td><td>' + tran.amount + '</td></tr>'
-						
-					})
-				}
-				$('tbody').html(body)
-				socket.emit('ALL_CLIENT_SEND', blockChain)
-			})
+			// socket.on('SERVER_SEND_TRANS_TO_USER', function(chain) {
+			// 	if($('tbody tr').length < chain.length - 1) {
+			// 		console.log('SERVER_SEND_TRANS_TO_USER');
+			// 		chain[chain.length - 1].transactions.forEach(function(tran) {
+			// 		})
+			// 	}
 
-
-			socket.on('SERVER_SEND_TRANS', function(chain) {
-				
-				if($('tbody tr').length < chain.length - 1) {
-					console.log('SERVER_SEND_TRANS');
-					chain[chain.length - 1].transactions.forEach(function(tran) {
-						var body = '<tr><td>' + chain[chain.length - 1].timestamp + '</td><td>' + tran.creditOwner + '</td><td>'
-						+ tran.creditNumber + '</td><td>' + tran.receiveOwner + '</td><td>' + tran.amount + '</td></tr>'
-						$('tbody').append(body)
-					})
-				}
-
-			})
+			// })
 
 		})
 	</script>	
@@ -94,6 +72,17 @@
 					</tbody>
 
 				</table>
+					<script type="text/javascript">
+						<%
+							if(locals.privateChain) {
+						 		for(i = 1; i < privateChain.length; i++) {
+						 			privateChain[i].transactions.forEach(function(tran) { %> 
+						 				var body = '<tr><td>'+'<%= privateChain[i].timestamp %>' +'</td><td>' + '<%= tran.creditOwner %>' + '<%= tran.creditNumber %>' + 
+						 			 	+"</td><td>" + '<%= tran.receiveOwner %>' +  '</td><td>' + '<%= tran.amount %>' + '</td></tr>'
+						 				$('tbody').html(body)								
+										
+						<% })} %>
+					</script>
 			</div>
 		</div>
 	</div>

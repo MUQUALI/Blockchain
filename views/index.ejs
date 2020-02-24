@@ -11,12 +11,142 @@
 	<title>home</title>
 	<script src="blockchain.js"></script>
 	<style type="text/css">
-		.info {
-			border: 1px solid #333;
-			padding: 5px;
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		header {
+			background-color: #121d33;
+			display: flex;
+			padding: 10px;
+			justify-content: space-evenly;
+		}
+
+		button {
+			background-color: #0c6cf2;
+			color: #fff;
+			width: 200px;
+			height: 50px;
+			margin-top: 10px;
+			border-radius: 6px;
+			font-size: 15px;
+		}
+
+		header img {
+			width: 100px;
+			height: 100px;
+			border-radius: 50px;
+		}
+		.logo_content {
+		}
+		.menu {
+			list-style-type: none;
+			display: flex;
+			align-items: center;
+		}
+
+		.menu li {
+			padding: 10px 15px;
+		}
+
+		.menu li a{
+			color: #fff;
+			text-decoration: none;
+			font-size: 20px;
+		}
+		.search-box {
+			padding: 15px 20px;
+			display: flex;
+			justify-content: center;
+		}
+		#search-form {
+			flex-basis: 1200px;
+		}
+
+		input[type="text"] {
+			width: 80%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		input[type=submit] {
+			width: 19%;
+			background-color: #4CAF50;
+			color: white;
+			padding: 14px 20px;
+			margin: 8px 0;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+		.content {
+			display: flex;
+			justify-content: center;
+		}
+
+		table {
+			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+			border-collapse: collapse;
+			width: 80%;
+		}
+
+		table td, table th {
+			border: 1px solid #ddd;
+			padding: 8px;
+		}
+
+		table tr:nth-child(even){background-color: #f2f2f2;}
+
+		table tr:hover {background-color: #ddd;}
+
+		table th {
+			padding-top: 12px;
+			padding-bottom: 12px;
+			text-align: left;
+			background-color: #4CAF50;
+			color: white;
+		}
+
+		body {
+        	position: relative;
+        	min-height: 100%;
+        	padding-bottom: 700px;
+    	}
+
+		footer {
+			background-color: #333;
+    		width: 100%;
+    		position: absolute;
+    		left: 0;
+    		bottom: 0;
+    		box-sizing: border-box;
+		}
+
+		footer > div {
+			display: flex;
+			justify-content: space-around;
+			color: #fff;
+		}
+
+		.about-us {
+			display: flex;
+			flex-direction: column;
 			margin-top: 15px;
-			margin-left: 16px;
-			margin-bottom: 15px;
+		}
+
+		.contact {
+			margin-top: 15px;
+			display: flex;
+			flex-direction: column;
+		}
+		#pr {
+			color: #f84609;
+			width: 80%;
+			margin: 40px auto;
+			font-size: 20px;
 		}
 	</style>
 	<script type="text/javascript">
@@ -34,8 +164,7 @@
 				let body = ''
 				for(i = 1; i < chain.length; i++) {
 					chain[i].transactions.forEach(function(tran) {
-						body += '<tr><td>' + chain[i].timestamp + '</td><td>' + tran.creditOwner + '</td><td>' + tran.creditNumber  + '</td><td>' + tran.receiveOwner + '</td><td>' + tran.amount + '</td></tr>'
-						
+						body += '<tr><td>' + chain[i].timestamp + '</td><td>' + tran.creditOwner + '</td><td>' + tran.creditNumber  + '</td><td>' + tran.bank + '</td><td>' + tran.receiveOwner + '</td><td>' + tran.charityCredit + '</td><td>' + tran.CharityBank + '</td><td>' + tran.amount + '</td></tr>'
 					})
 				}
 				$('tbody').html(body)
@@ -48,8 +177,7 @@
 				if($('tbody tr').length < chain.length - 1) {
 					console.log('SERVER_SEND_TRANS');
 					chain[chain.length - 1].transactions.forEach(function(tran) {
-						var body = '<tr><td>' + chain[chain.length - 1].timestamp + '</td><td>' + tran.creditOwner + '</td><td>'
-						+ tran.creditNumber + '</td><td>' + tran.receiveOwner + '</td><td>' + tran.amount + '</td></tr>'
+						var body = '<tr><td>' + chain[i].timestamp + '</td><td>' + tran.creditOwner + '</td><td>' + tran.creditNumber  + '</td><td>' + tran.bank + '</td><td>' + tran.receiveOwner + '</td><td>' + tran.charityCredit + '</td><td>' + tran.CharityBank + '</td><td>' + tran.amount + '</td></tr>'
 						$('tbody').append(body)
 					})
 				}
@@ -60,42 +188,64 @@
 	</script>	
 </head>
 <body>
-	<%- include('menuLogined'); -%>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4 info">
-				<label>Thông tin cá nhân</label><br>
-				<span>tài khoản:&nbsp <%= user %></span><br>
-				<span>số tiền đã từ thiện:&nbsp <%= user.money %></span>
+	<div class="container-none">
+		<header>
+			<div class="logo_content"><img src="/logo.png"></div>
+			<ul class="menu">
+				<li><a href="/">Trang Chủ</a></li>
+				<li><a href="/chain">Chuỗi Khối</a></li>
+				<li><a href="/charity">Từ Thiện</a></li>
+				<li><a href="/user">Cá Nhân</a></li>
+			</ul>
+			<div class="logout">
+				<a href="#"><button>Đăng Xuất</button></a>
 			</div>
+		</header>
+		<div class="search-box">
+			<form id="search-form" method="get" action="/home/search">
+				 <input type="text" name="search_box" placeholder="Nhập Số Tài Khoản, Người Gửi, Hoặc Người Nhận">
+				 <input type="submit" value="Tìm Kiếm">
+			</form>
 		</div>
 
-		<div class="row">
-			<div class="col-md-3">
-				<button id="btnCharity">
-					<a href="/charity">Bắt đầu từ thiện</a>
-				</button>
-			</div>
-		</div>
-
-		<div class="row">
-			<div class="col-md-12">
-				<table class="table table-bordered">
-					<thead>
-						<th>ngày</th>
-						<th>từ</th>
+		<div class="content">
+			<table>
+				<thead>
+					<tr>
+						<th>Thời Gian</th>
+						<th>Người Gửi</th>
 						<th>Số Tài Khoản</th>
-						<th>tới</th>
-						<th>số tiền</th>					
-					</thead>
-					<tbody>
+						<th>Ngân Hàng</th>
+						<th>Người Nhận</th>
+						<th>Số Tài Khoản</th>
+						<th>Ngân Hàng</th>
+						<th>Số Tiền</th>
+					</tr>
+				</thead>
+				<tbody>
 
-
-					</tbody>
-
-				</table>
-			</div>
+				</tbody>
+			</table>
 		</div>
+
+		<footer>
+			<div>
+				<div class="about-us">
+					<h4>Đội Ngũ Kỹ Thuật</h4>
+					<span>Nguyễn Ngọc Công Hoan - email: hoannc0102@gmail.com</span>
+					<span>Nguyễn Như Anh Tuấn - email: anhtuan98@gmail.com</span>
+					<span>Nguyễn Chí Tạo - email: chitao5799@gmail.com</span>
+				</div>
+
+				<div class="contact">
+					<h4>Liên Hệ</h4>
+					<span>Địa Chỉ: 96B Định Công</span>
+					<span>Khoa Công Nghệ Thông Tin - Đại Học Mở Hà Nội</span>
+					<span>hotline: 0333.73.73.73</span>
+				</div>
+			</div>
+			<div id="pr">SẢN PHẨM CỦA SINH VIÊN KHOA CÔNG NGHỆ THÔNG TIN - ĐẠI HỌC MỞ HÀ NỘI</div>
+		</footer>
 	</div>
 </body>
 </html>

@@ -1,65 +1,189 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<script src="/socket.io/socket.io.js"></script>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<title>home</title>
-   <style>
-        .tieu-de {
-            border-bottom: solid 1px black;
-            width: 298px;
-            height: 40px;
-            font-size: 25px;
-            overflow: hidden;
-            padding-top: 6px;
-            text-align: center;
-            background-color: #2766db;
-            color: white;
+    <title></title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
         }
-        
-        .nhap-dl {
+        body {
+            background-color: #0d3578;
+        }
+
+        header {
+            height: 100px;
+            padding: 20px;
+            display: flex;
+        }
+
+        h2 {
+            color: #fff;
+            flex-grow: 1
+        }
+
+        button {
+            background-color: #0d3578;
             width: 200px;
-            border-radius: 3px;
-            margin-top: 3px;
-        }
-        
-        .row {
-            margin: auto;
+            height: 50px;
             margin-top: 10px;
-            width: 300px;
-            height: 400px;
-            background-color: #82db6e;
-            border: 1px solid black;
-            border-radius: 6px 6px 0px 0px;
+            border-radius: 6px;
+            font-size: 15px;
         }
-        
-        .form-nhap {
+
+        button a {
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .container {
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login_form {
+            background-color: #fff;
+            width: 500px;
+            border-radius: 10px;
+            padding: 20px 50px;
+        }
+
+        .login_form > span {
+            color: #0d3578;
+            font-size: 28px;
             text-align: center;
+
+        }
+        input[type="text"], [type="password"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type=submit] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type=submit]:hover {
+            background-color: #45a049;
+        }
+        form {
+            margin-top: 40px;
+        }
+        .charityForm {
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-3">
-				<label class="tieu-de">Đăng Ký</label>
-				<form action="/register" method="post" class="form-nhap">
-					<input id="txtUsername" type="text" name="username" placeholder="Tên đăng nhập">
-					<input id="txtPassword" type="text" name="password" placeholder="Mật khẩu">
-					<input type="submit" value="Đăng ký" id="btnRegister">
-					<% if(locals.errs) { 
-						errs.forEach(function(err) { %>
-							<div class="alert alert-danger" role="alert">
-							  <%= err %>
-							</div>						
-						<% })} %>
-				</form>
-			</div>
-		</div>
-	</div>
+    <div class="container-none">
+        <header>
+            <h2>CHARITY CHAIN</h2>
+            <button><a href="/login">Đăng Nhập</a></button>
+        </header>
+
+        <div class="content">
+            <div class="login_form">
+                <span><b>THÔNG TIN CỦA BẠN</b></span><br>
+                <form action="/register" method="post">
+                    <label for="txtUsername">Tài Khoản *</label>
+                    <input type="text" name="username" id="txtUsername" onkeyup="checkSpecially(this)">
+
+                    <label for="txtPwd">Mật Khẩu *</label>
+                    <input type="password" name="password" id="txtPwd" onkeyup="checkSpecially(this)">
+
+                    <label for="txtFullName">Tên Của Bạn</label>
+                    <input type="text" name="full_name" id="txtFullName">
+
+                    <label for="ckbCharity">Bạn Là Tổ Chức Từ Thiện ?</label>
+                    <input type="checkbox" name="is_charity" id="ckbCharity" onchange="isCharity(this)"><br>
+
+                    <div class="charityForm">
+                        <label for="CharityCredit">Số Tài Khoản Của Tổ Chức</label>
+                        <input type="text" name="charity_credit" id="CharityCredit">
+
+                        <label for="CharityBank">Ngân Hàng</label>
+                        <input type="text" name="charity_bank" id="CharityBank">
+
+                        <label for="CharityPhone">Số Điện Thoại</label>
+                        <input type="text" name="charity_phone" id="CharityPhone">
+
+                        <label for="CharityCode">Mã Xác Nhận</label>
+                        <input type="text" name="code" id="CharityCode">
+                    </div>
+
+                    <input type="submit" value="Đăng Ký" id="btnSubmit">
+
+                    <% if(locals.errs) { 
+                        errs.forEach(function(err) { %>
+                            <div class="alert alert-danger" role="alert">
+                              <%= err %>
+                            </div>                      
+                        <% })} %>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
+    <script type="text/javascript">
+        let speciallys = ["à", "á", "ạ", "ả", "ã", "â", "ấ", "ầ", "ậ", "ẫ", "ẩ", "ă", "ằ", "ắ", "ặ", "ẵ", "ẳ",
+        "é", "è", "ẽ", "ẹ", "ẻ", "ê", "ế", "ề", "ệ", "ể", "ễ", "í", "ì", "ị", "ĩ", "ỉ", "ò", "ó", "ọ", "õ", "ỏ",
+        "ô", "ố", "ồ", "ổ", "ỗ", "ơ", "ớ", "ờ", "ở", "ợ", "ỡ", "ù", "ú", "ụ", "ủ", "ũ", "ư", "ứ", "ừ", "ử", "ữ",
+        "ự", "ý", "ỹ", "ỵ", "ỳ", "ỷ", "đ", " "]
+
+        let checkSpecially = function(input) {
+            let btn = $('#btnSubmit')
+            let err = $('#err')
+            if(err) {
+                err.remove()
+            }
+            btn.show()
+            for(word of speciallys) {
+                if(input.value.search(word) >=0) {
+                    btn.hide()
+                    if(input.getAttribute('id') == 'txtUsername') {
+                        input.insertAdjacentHTML('afterend', '<span id="err" style="color: red">Tài khoản không được chứa ký tự đặc biệt (space,dấu,v.v.)</span>')
+                    }
+                    if(input.getAttribute('id') == 'txtPwd') {
+                        input.insertAdjacentHTML('afterend', '<span id="err" style="color: red">Tài khoản không được chứa ký tự đặc biệt (space,dấu,v.v.)</span>')
+                    }
+                }
+            }
+        }
+
+        $(".charityForm").hide()
+
+        let isCharity = function(input) {
+            if(input.checked) {
+                $(".charityForm").show()
+                $("label[for='txtFullName']").html('Tên Tổ Chức')
+            }
+            else {
+                $(".charityForm").hide()
+                $("label[for='txtFullName']").html('Tên Của Bạn')
+            }
+        }
+    </script>
+
 </html>

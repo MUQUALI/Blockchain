@@ -3,7 +3,8 @@ var prettyjson = require('prettyjson')
 const EC = require('elliptic').ec
 const ec = new EC('secp256k1')
 
-function Transaction(fromAdress, toAdress, amount, creditNumber, creditOwner, bank, receiveOwner) {
+function Transaction(fromAdress, toAdress, amount, creditNumber, creditOwner, bank, receiveOwner,
+																	charityCredit, CharityBank) {
 	this.fromAdress = fromAdress
 	this.toAdress = toAdress
 	this.amount = amount
@@ -11,6 +12,8 @@ function Transaction(fromAdress, toAdress, amount, creditNumber, creditOwner, ba
 	this.creditOwner = creditOwner
 	this.bank = bank
 	this.receiveOwner = receiveOwner
+	this.charityCredit = charityCredit
+	this.CharityBank = CharityBank
 }
 
 Transaction.prototype.calculateHash = function() {

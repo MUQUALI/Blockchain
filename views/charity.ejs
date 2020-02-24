@@ -8,6 +8,97 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <title>charity</title>
+  <style type="text/css">
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .container-none {
+        position: relative;
+        padding-bottom: 250px;
+    }
+    header {
+      background-color: #121d33;
+      display: flex;
+      padding: 10px;
+      justify-content: space-evenly;
+    }
+
+    body {
+      background-color: #ff4000
+    }
+    button {
+      background-color: #0c6cf2;
+      color: #fff;
+      width: 200px;
+      height: 50px;
+      margin-top: 10px;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    header img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50px;
+    }
+    
+    .menu {
+      list-style-type: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .menu li {
+      padding: 10px 15px;
+    }
+
+    .menu li a{
+      color: #fff;
+      text-decoration: none;
+      font-size: 20px;
+    }
+    form {
+      color: #fff;
+      padding: 15px;
+    }
+    .charityForm {
+      width: 500px;
+      margin: 30px auto;
+      border: 1px solid #fff;
+      border-radius: 20px;
+    }
+
+    footer {
+      background-color: #333;
+      width: 100%;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+    }
+
+    footer > div {
+      display: flex;
+      justify-content: space-around;
+      color: #fff;
+    }
+
+    .about-us {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .contact {
+      display: flex;
+      flex-direction: column;
+    }
+    #pr {
+      color: #f84609;
+      width: 80%;
+      margin: 40px auto;
+      font-size: 20px;
+    }
+  </style>
   <script type="text/javascript">
     $(document).ready(function() {
       let blockChain
@@ -27,9 +118,21 @@
   </script> 
 </head>
 <body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
+  <div class="container-none">
+      <header>
+      <div class="logo_content"><img src="/logo.png"></div>
+      <ul class="menu">
+        <li><a href="/">Trang Chủ</a></li>
+        <li><a href="/chain">Chuỗi Khối</a></li>
+        <li><a href="/charity">Từ Thiện</a></li>
+        <li><a href="/user">Cá Nhân</a></li>
+      </ul>
+      <div class="logout">
+        <a href="#"><button>Đăng Xuất</button></a>
+      </div>
+    </header>
+
+    <div class="charityForm">
         <form action="/charity" method="post">
             <fieldset>
               <legend>Chuyển Tiền Từ</legend>
@@ -59,15 +162,33 @@
               <label for="charity-name">Tổ chức từ thiện</label>
                 <select id="charity-name" name="charity_pub_key" class="form-control">
                   <% charitys.forEach(function(user) { %>
-                  <option value="<%= user.pub_key %>"><%= user.username %></option>
+                  <option value="<%= user.pub_key %>"><%= user.full_name %></option>
 
                   <% }) %>
                 </select>
               </fieldset>
-          <button type="submit" class="btn btn-primary" id="btnSend">Gửi</button>
+          <button type="submit" class="btn btn-warning" id="btnSend">Gửi</button>
         </form>
-      </div>
     </div>
+
+    <footer>
+      <div>
+        <div class="about-us">
+          <h4>Đội Ngũ Kỹ Thuật</h4>
+          <span>Nguyễn Ngọc Công Hoan - email: hoannc0102@gmail.com</span>
+          <span>Nguyễn Như Anh Tuấn - email: anhtuan98@gmail.com</span>
+          <span>Nguyễn Chí Tạo - email: chitao5799@gmail.com</span>
+        </div>
+
+        <div class="contact">
+          <h4>Liên Hệ</h4>
+          <span>Địa Chỉ: 96B Định Công</span>
+          <span>Khoa Công Nghệ Thông Tin - Đại Học Mở Hà Nội</span>
+          <span>hotline: 0333.73.73.73</span>
+        </div>
+      </div>
+      <div id="pr">SẢN PHẨM CỦA SINH VIÊN KHOA CÔNG NGHỆ THÔNG TIN - ĐẠI HỌC MỞ HÀ NỘI</div>
+    </footer>
   </div>
 </body>
 </html>

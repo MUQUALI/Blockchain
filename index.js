@@ -1,13 +1,19 @@
-var app = require('express')();
-var express = require('express')
-var cookieParser = require('cookie-parser')
-var http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const app = require('express')();
+const express = require('express')
+const cookieParser = require('cookie-parser')
+const http = require('http').createServer(app);
+const io = require('socket.io')(http);
+require('dotenv').config()
+
+const mongoose = require('mongoose');
+mongoose.connect(process.env.DB_URI, {useNewUrlParser: true});
+
+const auth = require('./auth/login.auth.js')
 
 const Blockchain = require('./blockchain')
 const Block = require('./block')
 const Transaction = require('./transaction')
-const User = require('./user')
+const User = require('./models/user.model.js')
 
 
 var bodyParser = require('body-parser')
@@ -19,12 +25,6 @@ const key = ec.genKeyPair()
 //db
 const low = require('lowdb')
 const FileSync = require('lowdb/adapters/FileSync')
-
-const adapter = new FileSync('db.json')
-const db = low(adapter)
-
-db.defaults({ users: []})
-  .write()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -41,13 +41,14 @@ let flagFirstLogin = 0
 let listNode = []
 let flagSendTransaction = 0
 let usernameLogin = ''
+let authCode = ['1201', '2020']
 
 
 app.get('/login', function(req, res){
   res.render('login');
 });
 
-app.post('/login', function(req, res) {
+app.post('/login', async function(req, res) {
 
 	let errs = []
 	if(!req.body.username) {
@@ -57,10 +58,9 @@ app.post('/login', function(req, res) {
 		errs.push('mật khẩu là bắt buộc')
 	}
 
-	let userLogin = blockChain.userChain.find(block => {
-		return block.user.username === req.body.username
-	})
-	if(!userLogin || userLogin.user.password !== req.body.password) {
+	let userLogin = await User.findOne({username: req.body.username})
+
+	if(!userLogin || userLogin.password !== req.body.password) {
 		errs.push('sai tài khoản hoặc mật khẩu')
 	}
 
@@ -72,13 +72,13 @@ app.post('/login', function(req, res) {
 		return;
 	}
 
-	res.cookie('username', userLogin.user.username, {
-			signed: false
+	res.cookie('username', userLogin.username, {
+			signed: true
 	})
 
 	usernameLogin = req.body.username
 
-	res.redirect('/home')
+	res.redirect('/')
 	return
 });
 
@@ -86,13 +86,8 @@ app.get('/register', function(req, res){
   res.render('register');
 });
 
-app.post('/register', function(req, res){
-	let userData = blockChain.userChain
+app.post('/register', async function(req, res){
 	let errs = []
-
-	if(!blockChain.isValidUserData()) {
-		errs.push('dữ liệu hệ thống đã bị thay đổi, vui lòng chờ đội ngũ kỹ thuật khắc phục !!')
-	}
 
 	if(!req.body.username) {
 		errs.push('tài khoản là bắt buộc')
@@ -102,14 +97,41 @@ app.post('/register', function(req, res){
 		errs.push('mật khẩu là bắt buộc')
 	}
 
-	let userRegister = new User(req.body.username, req.body.password, 0, 0)
+	let checkExits = await User.find({username: req.body.username})
 
-	let checkExits = userData.find(block => {
-		return block.user.username === userRegister.username
-	})
-
-	if(checkExits) {
+	if(checkExits.length > 0) {
 		errs.push('đã tồn tại tài khoản')
+	}
+
+	const privateKey = key.getPrivate('hex')
+	const userKey = ec.keyFromPrivate(privateKey)
+	this.private_key = privateKey
+	this.pub_key = userKey.getPublic('hex')
+
+	let userRegister = {
+		username : req.body.username,
+		password : req.body.password,
+		full_name : req.body.full_name,
+		pub_key: userKey.getPublic('hex'),
+		private_key: privateKey
+	}
+
+	if(req.body.is_charity) {
+		userRegister.is_charity = true
+		userRegister.charity_credit = req.body.charity_credit
+		userRegister.charity_bank = req.body.charity_bank
+		userRegister.charity_phone = req.body.charity_phone
+
+		let auth = false;
+		for(code of authCode) {
+			if(req.body.code == code) {
+				auth = true
+			}
+		}
+
+		if(!auth) {
+			errs.push('Sai mã xác thực, vui lòng liên hệ để lấy mã !')
+		}
 	}
 
 	if(errs.length) {
@@ -120,60 +142,92 @@ app.post('/register', function(req, res){
 		return;
 
 	}
-
-	blockChain.createUser(userRegister)
-
-	//console.log(blockChain.userChain)
+	User.create(userRegister, function(err, doc) {
+		if(err) {
+			throw new Error('opp!! something wrong ...')
+		}
+	})
 
 	res.redirect('/login')
 })
 
 
-app.get('/home', function(req, res) {
+app.get('/', auth.authLogin, function(req, res) {
 	res.render('index', {
 		user: usernameLogin
 	})
 })
 
-app.get('/user', function(req, res) {
-	let username = req.query.username
-	let privateChain = blockChain.chain.filter(block => {
-		if(block.transaction[0].creditOwner == username) {
+app.get('/home/search', auth.authLogin, function(req, res) {
+	let key = req.query.search_box
+	let searchChain = blockChain.chain.filter(block => {
+		if(block.transactions[0].creditOwner.indexOf(key) || block.transactions[0].creditNumber.indexOf(key)
+			|| block.transactions[0].receiveOwner.indexOf(key) || block.transactions[0].charityCredit.indexOf(key)) {
 			return block
 		}
 	})
-	res.render('user', {
-		blockChain: privateChain,
-		user: username
+	res.render('indexsearch', {
+		blockChain: searchChain
 	})
 })
 
+app.get('/user',auth.authLogin, async function(req, res) {
+	let user = await User.findOne({username: req.signedCookies.username})
 
+	let money = blockChain.getBalanceOfAdress(user.pub_key)
 
-app.get('/charity', function(req, res) {
-	var charitys = blockChain.userChain.filter(block => {
-		if(block.user.is_charity == 1) {
+	let yourChain = blockChain.chain.filter(block => {
+		if(block.transactions[0].fromAdress === user.pub_key)
 			return block
-		}
 	})
 
-	charitys = charitys.map(block => block.user)
+	res.render('user', {
+		user: user,
+		money: money,
+		blockChain: yourChain
+	})
+})
 
-	
+app.get('/chain',auth.authLogin, function(req, res) {
+	if(req.query.search_box) {
+		let searchChain = blockChain.chain.filter(block => {
+			if(block.hash == req.query.search_box) {
+				return block
+			}
+		})
+
+		res.render('chain', {
+			blockChain: searchChain
+		})
+		return	
+	}
+	res.render('chain', {
+		blockChain: blockChain.chain.slice(1)
+	})
+})
+
+app.get('/chain/:id',auth.authLogin, function(req, res) {
+	var id = req.params.id
+	var block = blockChain.chain.find(function(block) {
+		return block.hash === id ? block : ''
+	})
+
+	res.render('detail', {
+		block: block
+	})
+})
+
+app.get('/charity',auth.authLogin, async function(req, res) {
+	var charitys = await User.find({is_charity: true})
 
 	res.render('charity', {
 		charitys: charitys
 	})
 })
 
-app.post('/charity', function(req, res) {
+app.post('/charity', async function(req, res) {req.signedCookies.username
 
-	let blockFind = blockChain.userChain.find(block => {
-		return block.user.username === req.cookies.username
-	})
-	let blockSend = blockChain.userChain.lastIndexOf(blockFind)
-
-	let userSend = blockChain.userChain[blockSend].user
+	let userSend = await User.findOne({username: req.signedCookies.username})
 	let fromAdress = userSend.pub_key
 	let toAdress = req.body.charity_pub_key
 
@@ -182,16 +236,14 @@ app.post('/charity', function(req, res) {
 	let bank = req.body.bank
 	
 	let amount = parseInt(req.body.amount)
-	//console.log(Transaction)
 
-	let blockReceive = blockChain.userChain.find(block => {
-		return block.user.pub_key === toAdress
-	})
+	let userReceive = await User.findOne({pub_key: toAdress})
+	let receiveOwner = userReceive.full_name
+	let charityCredit = userReceive.charity_credit
+	let CharityBank = userReceive.charity_bank
 
-	let userReceive = blockChain.userChain[blockChain.userChain.lastIndexOf(blockReceive)].user
-	let receiveOwner = userReceive.username
-
-	let transaction = new Transaction(fromAdress, toAdress, amount, creditNumber, creditOwner, bank, receiveOwner)
+	let transaction = new Transaction(fromAdress, toAdress, amount, creditNumber, creditOwner, bank, 
+		receiveOwner, charityCredit, CharityBank)
 
 	transaction.signTransaction(ec.keyFromPrivate(userSend.private_key))
 
@@ -206,13 +258,13 @@ app.post('/charity', function(req, res) {
 
 	//blockChain.createUser(userReceive)
 
-	res.redirect('/home')
+	res.redirect('/')
 })
 
 // hanlde socketio
 
 http.listen(3000, function(){
-  console.log('listening on *:3000');
+  console.log('listening');
 });
 
 io.on('connection', function(socket) {
@@ -258,7 +310,6 @@ io.on('connection', function(socket) {
 				throw new Error('something wrong!!!')
 			}
 			flagSendTransaction = 1;
-			//socket.broadcast.emit('SERVER_SEND_TRANS')
 		}
 		else {
 			throw new Error('something wrong!!!')
@@ -266,7 +317,6 @@ io.on('connection', function(socket) {
 	})
 	setInterval(function() {
 		if(flagSendTransaction == 1) {
-			console.log(flagSendTransaction)
 			io.sockets.emit('SERVER_SEND_TRANS', blockChain.chain)
 			flagSendTransaction = 0;
 		}

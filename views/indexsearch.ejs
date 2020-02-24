@@ -3,7 +3,7 @@
 <head>
 	<title></title>
 	<style type="text/css">
-		*{
+		* {
 			margin: 0;
 			padding: 0;
 		}
@@ -50,18 +50,12 @@
 			font-size: 20px;
 		}
 		.search-box {
-			width: 30%;
 			padding: 15px 20px;
 			display: flex;
-			flex-direction: column;
 			justify-content: center;
-			border-radius: 8px;
-			border: 1px solid #333;
-			margin:30px auto;
 		}
-
-		.search-box h3 {
-			text-align: center;
+		#search-form {
+			flex-basis: 1200px;
 		}
 
 		input[type="text"] {
@@ -166,11 +160,10 @@
 			</div>
 		</header>
 		<div class="search-box">
-			<h3>Thông Tin Tài Khoản</h3>
-			<span>Tài Khoản: <%=user.username%></span>
-			<span>Họ Tên: <%=user.full_name%></span>
-			<span>Địa Chỉ - Public Key: ...<%=user.pub_key.substr(-32)%></span>
-			<span>Số Tiền Từ Thiện: <%=money * -1%></span>
+			<form id="search-form" method="get" action="/home/search">
+				 <input type="text" name="search_box" placeholder="Nhập Mã Băm, Người Gửi, Hoặc Người Nhận">
+				 <input type="submit" value="Tìm Kiếm">
+			</form>
 		</div>
 
 		<div class="content">

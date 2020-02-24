@@ -3,18 +3,15 @@
 <head>
 	<title></title>
 	<style type="text/css">
-		*{
-			margin: 0;
+		* {
 			padding: 0;
+			margin: 0;
 		}
 		header {
 			background-color: #121d33;
 			display: flex;
 			padding: 10px;
 			justify-content: space-evenly;
-		}
-
-		.logout {
 		}
 
 		button {
@@ -50,18 +47,12 @@
 			font-size: 20px;
 		}
 		.search-box {
-			width: 30%;
 			padding: 15px 20px;
 			display: flex;
-			flex-direction: column;
 			justify-content: center;
-			border-radius: 8px;
-			border: 1px solid #333;
-			margin:30px auto;
 		}
-
-		.search-box h3 {
-			text-align: center;
+		#search-form {
+			flex-basis: 1200px;
 		}
 
 		input[type="text"] {
@@ -83,10 +74,6 @@
 			border-radius: 4px;
 			cursor: pointer;
 		}
-		.content {
-			display: flex;
-			justify-content: center;
-		}
 
 		table {
 			font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
@@ -106,9 +93,21 @@
 		table th {
 			padding-top: 12px;
 			padding-bottom: 12px;
-			text-align: left;
+			text-align: center;
 			background-color: #4CAF50;
 			color: white;
+		}
+		.detail {
+			display: flex;
+			justify-content: center;
+			width: 90%;
+			margin: 0 auto;
+		}
+		#right {
+			margin-left: 10px;
+		}
+		.center {
+			margin: 30px auto;
 		}
 
 		body {
@@ -149,6 +148,7 @@
 			margin: 40px auto;
 			font-size: 20px;
 		}
+
 	</style>
 </head>
 <body>
@@ -165,45 +165,89 @@
 				<a href="#"><button>Đăng Xuất</button></a>
 			</div>
 		</header>
-		<div class="search-box">
-			<h3>Thông Tin Tài Khoản</h3>
-			<span>Tài Khoản: <%=user.username%></span>
-			<span>Họ Tên: <%=user.full_name%></span>
-			<span>Địa Chỉ - Public Key: ...<%=user.pub_key.substr(-32)%></span>
-			<span>Số Tiền Từ Thiện: <%=money * -1%></span>
-		</div>
 
 		<div class="content">
-			<table>
+			<table class="center">
 				<thead>
 					<tr>
-						<th>Thời Gian</th>
-						<th>Người Gửi</th>
-						<th>Số Tài Khoản</th>
-						<th>Ngân Hàng</th>
-						<th>Người Nhận</th>
-						<th>Số Tài Khoản</th>
-						<th>Ngân Hàng</th>
-						<th>Số Tiền</th>
+						<th colspan="2">Thông Tin Khối</th>
+					</tr>
+					<tr>
+						<td>Thời Gian Tạo</td>
+						<td> <%= block.timestamp%> </td>
+					</tr>
+					<tr>
+						<td>Mã Băm</td>
+						<td> <%= block.hash%> </td>
+					</tr>
+					<tr>
+						<td>Chiều Cao (Nonce)</td>
+						<td> <%= block.nonce%> </td>
 					</tr>
 				</thead>
-				<tbody>
-					<% if(locals.blockChain) {
-						blockChain.forEach(function(block) { %>
-							<tr>
-								<td><%=block.timestamp%></td>
-								<td><%=block.transactions[0].creditOwner%></td>
-								<td><%=block.transactions[0].creditNumber%></td>
-								<td><%=block.transactions[0].bank%></td>
-								<td><%=block.transactions[0].receiveOwner%></td>
-								<td><%=block.transactions[0].charityCredit%></td>
-								<td><%=block.transactions[0].CharityBank%></td>
-								<td><%=block.transactions[0].amount%></td>
-							</tr>
-					<% })
-				} %>
-				</tbody>
 			</table>
+
+			<div class="detail">
+				<table id="left">
+					<thead>
+						<tr>
+							<th colspan="2">Người Gửi</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Địa Chỉ - public key</td>
+							<td> ...<%= block.transactions[0].fromAdress.substr(-32)%> </td>
+						</tr>
+						<tr>
+							<td>Chủ Tài Khoản</td>
+							<td> <%= block.transactions[0].creditOwner%> </td>
+						</tr>
+						<tr>
+							<td>Số Tài Khoản</td>
+							<td> <%= block.transactions[0].creditNumber%> </td>
+						</tr>
+						<tr>
+							<td>Ngân Hàng</td>
+							<td> <%= block.transactions[0].bank%> </td>
+						</tr>
+						<tr>
+							<td>Số Tiền Gửi</td>
+							<td> <%= block.transactions[0].amount%> </td>
+						</tr>
+					</tbody>
+				</table>
+
+				<table id="right">
+					<thead>
+						<tr>
+							<th colspan="2">Người Nhận</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Địa Chỉ - public key</td>
+							<td> ...<%= block.transactions[0].toAdress.substr(-32)%> </td>
+						</tr>
+						<tr>
+							<td>Tổ Chức Nhận</td>
+							<td> <%= block.transactions[0].receiveOwner%> </td>
+						</tr>
+						<tr>
+							<td>Số Tài Khoản</td>
+							<td> <%= block.transactions[0].charityCredit%> </td>
+						</tr>
+						<tr>
+							<td>Ngân Hàng</td>
+							<td> <%= block.transactions[0].CharityBank%> </td>
+						</tr>
+						<tr>
+							<td>Số Tiền Nhận</td>
+							<td> <%= block.transactions[0].amount%> </td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 
 		<footer>

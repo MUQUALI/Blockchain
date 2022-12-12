@@ -10,7 +10,7 @@
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "elliptic": "^6.5.2",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "lowdb": "^1.0.0",
     "mongoose": "^5.9.1",
     "prettyjson": "^1.2.1",
